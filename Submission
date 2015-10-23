@@ -1,0 +1,59 @@
+## This pair of functions can be used to cache the inverse of a matrix.
+## If the contents of a matrix are not changing, it may make sense and 
+## save time to cache the value of the inverse so that it can be looked up 
+## in the cache rather than recomputed if is needed again.
+## makeCacheMatrix creates a special "matrix" object that can cache its 
+## inverse.
+## cacheSolve computes the inverse of this special "matrix"; whereby if the 
+## inverse has already been calculated (and the matrix has not 
+## changed) it will be retrieved from the cache.
+
+
+
+## makeCacheMatrix is a function that stores a list of 4 other functions. 
+## get_matrix is a function that returns the matrix x stored in the main 
+## function.
+## set_matrix is a function that changes the matrix stored in the main 
+## function.
+## set_matrix_inverse stores the value of its input in variable i into the
+## main function.
+## get_matrix_inverse doesn't calculate the inverse of the matrix, it simply
+## returns the value stored as i.
+
+makeCacheMatrix <- function(x = matrix()) {
+        i <- NULL
+        set_matrix <- function(y){
+                x <<- y
+                i <<- NULL
+        }
+        get_matrix <- function() x
+        set_matrix_inverse <- function(inverse) i <<- inverse
+        get_matrix_inverse <- function() i
+        list(set_matrix=set_matrix, get_matrix=get_matrix, set_matrix_inverse=set_matrix_inverse, 
+        get_matrix_inverse=get_matrix_inverse)
+}
+
+
+
+## cacheSolve is a function that returns a matrix that is the inverse of 'x'.
+## First, cacheSolve checks if the value i, stored previously with 
+## get_matrix_inverse, exists and is not NULL. 
+## If it exists in memory, the function simply returns a message and the 
+## value i, that is supposedly the inverse, but not necessarily.
+## If it doesn't exist in memory, the real inverse is calculated, stored 
+## and printed. 
+
+cacheSolve <- function(x, ...) {
+        i <- x$get_matrix_inverse()     
+        if(!is.null(i)) {
+                message("getting cached data")
+                return(i)
+        }
+        data <- x$get_matrix()
+        i <- solve(data, ...)
+        x$set_matrix_inverse(i)
+        i
+}
+
+
+
